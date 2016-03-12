@@ -1,0 +1,22 @@
+{
+  "name": "gervin",
+  "version": "1.0.0",
+  "description": "Discord chat bot built to only interact through text messages",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kdparker/gervin.git"
+  },
+  "author": "Keegan Parker",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kdparker/gervin/issues"
+  },
+  "homepage": "https://github.com/kdparker/gervin#readme",
+  "dependencies": {
+    "discord.js": "^6.0.0"
+  }
+}
