@@ -3,19 +3,20 @@ var Action = require("./base_action.js"),
     AuthDetails = require("../auth.json"),
     inherits = require('util').inherits;
 
-function ImageMe() {
-    Action.call(this);
-    this.name = "ImageMe";
+function ImageMe(gervin) {
     this.client = googleimages(AuthDetails.cse_id, AuthDetails.cse_api_key);
+    Action.call(this, gervin);
 }
 
 inherits(ImageMe, Action)
 
-ImageMe.prototype.does_match = function(gervin, msg) {
+ImageMe.prototype.name = "Image Me";
+
+ImageMe.prototype.on_message_matcher = function(gervin, msg) {
     return msg.content.match(/image\s+me\s+[^\s]/i);
 }
 
-ImageMe.prototype.run = function(gervin, msg) {
+ImageMe.prototype.on_message = function(gervin, msg) {
     term = msg.content.match(/image\s+me\s+([^\s].*)/i)[1];
     this.client.search(term)
         .then(function(images) {
@@ -31,4 +32,4 @@ ImageMe.prototype.run = function(gervin, msg) {
         });
 }
 
-module.exports = new ImageMe()
+module.exports = ImageMe
