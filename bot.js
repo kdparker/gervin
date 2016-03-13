@@ -1,5 +1,7 @@
 var Discord = require("discord.js");
 
+var MessageResponse = require("./message_response.js");
+
 var AuthDetails = require("./auth.json");
 
 var gervin = new Discord.Client();
@@ -14,7 +16,7 @@ gervin.on("disconnected", function () {
 });
 
 gervin.on("message", function (msg) {
-    
+    MessageResponse(gervin, msg);
 });
 
 gervin.login(AuthDetails.email, AuthDetails.password);
