@@ -1,5 +1,6 @@
 actions = [
-    require('./actions/pingpong.js')
+    require('./actions/pingpong.js'),
+    require('./actions/imageme.js')
 ];
 
 module.exports = function(gervin, msg) {
@@ -10,9 +11,10 @@ module.exports = function(gervin, msg) {
     for (var i = 0; i < actions.length; i++) {
         var action = actions[i];
         try {
-            if (action.does_match(gervin, msg)) 
+            if (action.does_match(gervin, msg)) {
                 console.log("Running action: " + action.name)
                 action.run(gervin, msg)
+            }
         } catch (e) {
             console.log("Error occured processing action: " + action.name)
             console.log(e)
