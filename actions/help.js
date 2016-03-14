@@ -29,7 +29,11 @@ Help.prototype.send_help = function(gervin, msg, actions) {
             output += "\n\n"
         output += self.get_help(action);
     }
-    gervin.sendMessage(msg.channel, output);
+    gervin.sendMessage(msg.author, output).catch(function(err) {
+        output += "\n\nPlease open a PM channel with me so that I can PM you next time you need help";
+        gervin.sendMessage(msg.channel, output);
+    });
+    gervin.deleteMessage(msg);
 }
 
 Help.prototype.on_message = function(gervin, msg) {
