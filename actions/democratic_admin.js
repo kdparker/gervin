@@ -2,8 +2,9 @@ var Action = require("./base_action.js"),
     util = require("util"),
     inherits = require('util').inherits;
 
-const MATCH_REGEX = /^\s*(gervin\s+)?vote\s+(tts)\s+(start|count|yes|no)/i;
+const MATCH_REGEX = /^\s*(gervin\s+)?(tts)\s+(start|count|yes|no)/i;
 const TIME_TO_VOTE = 30000
+const vote_types = ["tts"];
 
 function DemoAdmin(gervin) {
     Action.call(this, gervin);
@@ -15,13 +16,18 @@ inherits(DemoAdmin, Action)
 
 DemoAdmin.prototype.name = "Democratic Admin";
 
+DemoAdmin.prototype.help = "Vote types are: " + vote_types.join(", ") + "\n" +
+    "Commands [optional]:\n" +
+    "To start a vote - [gervin ]VOTE_TYPE start\n" +
+    "To get a vote count - [gervin ]VOTE_TYPE count\n" +
+    "To vote - [gervin ]VOTE_TYPE (yes or no)";
+
 DemoAdmin.prototype.on_message_matcher = function(gervin, msg) {
     return (msg.content.match(MATCH_REGEX) && (!msg.channel.isPrivate));
 }
 
 DemoAdmin.prototype.on_ready = function(gervin, msg) {
     var self = this;
-    var vote_types = ["tts"];
     
     var servers = gervin.channels.filter(
         function(channel) {

@@ -12,6 +12,10 @@ inherits(ImageMe, Action)
 
 ImageMe.prototype.name = "Image Me";
 
+ImageMe.prototype.help = "gervin image me XYZ\n" +
+    "Searches Google image search for XYZ and grabs a random image url" +
+    "from the first page of that search.";
+
 ImageMe.prototype.on_message_matcher = function(gervin, msg) {
     return msg.content.match(/image\s+me\s+[^\s]/i);
 }

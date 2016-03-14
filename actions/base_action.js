@@ -2,7 +2,10 @@ function Action(gervin) {
     var self = this
     gervin.on("message", function(msg) {
         try {
-            if (self.on_message_matcher(gervin, msg)) {
+            if (
+                msg.sender.id != gervin.user.id &&
+                self.on_message_matcher(gervin, msg)
+            ) {
                 console.log("Running action: " + self.name)
                 self.on_message(gervin, msg);
             }
@@ -46,5 +49,6 @@ Action.prototype.on_message = function (gervin, msg) {
 }
 Action.prototype.on_ready = null;
 Action.prototype.on_presence = null;
+Action.prototype.help = "No help defined";
 
 module.exports = Action
