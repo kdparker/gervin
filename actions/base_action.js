@@ -6,7 +6,10 @@ function Action(gervin) {
                 msg.sender.id != gervin.user.id &&
                 self.on_message_matcher(gervin, msg)
             ) {
-                console.log("Running action: " + self.name)
+                console.log(
+                    "Running action: " + self.name + 
+                    " from message: " + msg.cleanContent
+                )
                 self.on_message(gervin, msg);
             }
         } catch (e) {

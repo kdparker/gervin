@@ -97,8 +97,8 @@ DemoAdmin.prototype.end_vote = function(gervin, msg, vote_type) {
     var server_id = msg.channel.server.id;
    
     // Positive = YES, Negative = NO, 0 = TIE
-    var result = self.votes_cast[server_id][vote_type].yes -
-        self.votes_cast[server_id][vote_type].no
+    var result = self.votes_cast[server_id][vote_type].yes.length -
+        self.votes_cast[server_id][vote_type].no.length
 
     if (vote_type === "tts") {
         if (result > 0) {
@@ -192,7 +192,11 @@ DemoAdmin.prototype.vote = function(gervin, msg, vote_type, vote) {
     var server_id = msg.channel.server.id;
     var user_id = msg.sender.id
     if (self.votes_active[server_id][vote_type]) {
-        self.votes_cast[server_id][vote_type][vote].push(user_id);
+        if (self.votes_cast[server_id][vote_type][vote].indexOf(user_id) === -1) {
+            self.votes_cast[server_id][vote_type][vote].push(user_id);
+            console.log(msg.sender.username + " voted " + vote + " in " + vote_type);
+        }
+
         var opp_index = self.votes_cast[server_id][vote_type][opposite].indexOf(user_id);
         if (opp_index > -1) {
             self.votes_cast[server_id][vote_type][opposite].splice(
