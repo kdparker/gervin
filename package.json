@@ -18,6 +18,7 @@
   "homepage": "https://github.com/kdparker/gervin#readme",
   "dependencies": {
     "discord.js": "^6.0.0",
-    "google-images": "^1.0.0"
+    "google-images": "^1.0.0",
+    "sqlite3": "^3.1.1"
   }
 }

@@ -1,9 +1,6 @@
 function Action(gervin) {
     var self = this
     gervin.on("message", function(msg) {
-        if (!(msg.content.match(/^\s*gervin\s+/i)))
-            return;
-
         try {
             if (self.on_message_matcher(gervin, msg)) {
                 console.log("Running action: " + self.name)
@@ -29,7 +26,7 @@ function Action(gervin) {
     if (self.on_presence) {
         gervin.on("presence", function(old_user, new_user) {
             try {
-                self.on_presence(gervin);
+                self.on_presence(gervin, old_user, new_user);
             } catch(e) {
                 console.log("Error occured processing presence action: " + self.name)
                 console.log(e)
