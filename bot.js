@@ -1,29 +1,39 @@
 var Discord = require("discord.js");
 
 var AuthDetails = require("./auth.json"),
-    EnabledActions = require("./actions/enabled_actions.json");
+    EnabledActions = require("./actions/enabledActions.json"),
+    GervinHelpers = require("./gervinHelpers.js");
 
 var gervin = new Discord.Client();
 
-function build_enabled_actions() {
+function extendGervin() {
+    var keys = Object.keys(GervinHelpers);
+    for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        gervin[key] = GervinHelpers[key];
+    }
+}
+
+function buildEnabledActions() {
     gervin.actions = [];
     console.log("Loading enabled actions... " + EnabledActions);
     for (var i = 0; i < EnabledActions.length; i++) {
-        action_file_name = EnabledActions[i] + ".js";
+        actionFileName = EnabledActions[i] + ".js";
         try {
-            console.log("Loading " + action_file_name + "...");
-            Action = require("./actions/" + action_file_name);
-            new_action = new Action(gervin);
-            gervin.actions.push(new_action);
-            console.log("Loaded " + action_file_name);
+            console.log("Loading " + actionFileName + "...");
+            Action = require("./actions/" + actionFileName);
+            newAction = new Action(gervin);
+            gervin.actions.push(newAction);
+            console.log("Loaded " + actionFileName);
         } catch (e) {
-            console.log("ERROR: Failed loading " + action_file_name + ": ");
+            console.log("ERROR: Failed loading " + actionFileName + ": ");
             console.log(e);
         }
     }
 }
 
-build_enabled_actions();
+extendGervin();
+buildEnabledActions();
 
 gervin.on("ready", function () {
     console.log("Ready!");

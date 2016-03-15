@@ -4,13 +4,13 @@ function Action(gervin) {
         try {
             if (
                 msg.sender.id != gervin.user.id &&
-                self.on_message_matcher(gervin, msg)
+                self.onMessageMatcher(gervin, msg)
             ) {
                 console.log(
                     "Running action: " + self.name + 
                     " from message: " + msg.cleanContent
                 )
-                self.on_message(gervin, msg);
+                self.onMessage(gervin, msg);
             }
         } catch (e) {
             console.log("Error occured processing message action: " + self.name)
@@ -18,10 +18,10 @@ function Action(gervin) {
         }
     });
 
-    if (self.on_ready) {
+    if (self.onReady) {
         gervin.on("ready", function() {
             try {
-                self.on_ready(gervin);
+                self.onReady(gervin);
             } catch(e) {
                 console.log("Error occured processing ready action: " + self.name)
                 console.log(e)
@@ -29,10 +29,10 @@ function Action(gervin) {
         });
     }
 
-    if (self.on_presence) {
-        gervin.on("presence", function(old_user, new_user) {
+    if (self.onPresence) {
+        gervin.on("presence", function(oldUser, newUser) {
             try {
-                self.on_presence(gervin, old_user, new_user);
+                self.onPresence(gervin, oldUser, newUser);
             } catch(e) {
                 console.log("Error occured processing presence action: " + self.name)
                 console.log(e)
@@ -43,15 +43,16 @@ function Action(gervin) {
 
 Action.prototype.name = "Unnamed Action";
 
-Action.prototype.on_message_matcher = function(gervin, msg) {
+Action.prototype.onMessageMatcher = function(gervin, msg) {
     return false;
 }
 
-Action.prototype.on_message = function (gervin, msg) {
+Action.prototype.onMessage = function (gervin, msg) {
     throw "Undefined message behavior for " + this.name;
 }
-Action.prototype.on_ready = null;
-Action.prototype.on_presence = null;
+
+Action.prototype.onReady = null;
+Action.prototype.onPresence = null;
 Action.prototype.help = "No help defined";
 
 module.exports = Action

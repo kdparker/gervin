@@ -1,4 +1,4 @@
-var Action = require("./base_action.js"),
+var Action = require("./baseAction.js"),
     inherits = require('util').inherits;
 
 function PingPong(gervin) {
@@ -11,11 +11,11 @@ PingPong.prototype.name = "Ping Pong";
 
 PingPong.prototype.help = "Pings your pongs";
 
-PingPong.prototype.on_message_matcher = function(gervin, msg) {
+PingPong.prototype.onMessageMatcher = function(gervin, msg) {
     return msg.content.match(/ping/i);
 }
 
-PingPong.prototype.on_message = function(gervin, msg) {
+PingPong.prototype.onMessage = function(gervin, msg) {
     gervin.sendMessage(msg.channel, "pong");
 }
 
