@@ -12,7 +12,7 @@ PingPong.prototype.name = "Ping Pong";
 PingPong.prototype.help = "Pings your pongs";
 
 PingPong.prototype.onMessageMatcher = function(gervin, msg) {
-    return msg.content.match(/ping/i);
+    return msg.content.match(/(\s|^)ping(\s|$)/i);
 }
 
 PingPong.prototype.onMessage = function(gervin, msg) {
