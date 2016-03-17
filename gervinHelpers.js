@@ -21,3 +21,12 @@ module.exports.pmAndDelete = function(msg, content) {
     self.pm(msg, content);
     self.deleteMessage(msg);
 };
+
+module.exports.getTestFieldChannel = function () {
+    var self = this;
+    for (var i = 0; i < self.channels.length; i++) {
+        var channel = self.channels[i];
+        if (channel.server.name === "Gervin Testfield" && channel.type == "text") 
+            return channel
+    }
+}

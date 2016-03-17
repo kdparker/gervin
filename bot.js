@@ -1,4 +1,5 @@
-var Discord = require("discord.js");
+var Discord = require("discord.js"),
+    sqlite3 = require('sqlite3').verbose();
 
 var AuthDetails = require("./auth.json"),
     EnabledActions = require("./actions/enabledActions.json"),
@@ -12,6 +13,7 @@ function extendGervin() {
         var key = keys[i];
         gervin[key] = GervinHelpers[key];
     }
+    gervin.db = new sqlite3.Database(AuthDetails.dbName);
 }
 
 function buildEnabledActions() {
