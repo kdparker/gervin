@@ -32,7 +32,7 @@ SpoilerSpoiler.prototype.filterByMoreRecent = function(cardLinks, lastSeen) {
     output = []
     for (var i=0; i < cardLinks.length; i++) {
         var cardLink = cardLinks[i];
-        if (cardLink === lastSeen)
+        if (cardLink === lastSeen || i >= 5)
             break;
         output.push(cardLink);
     }
