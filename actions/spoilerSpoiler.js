@@ -102,11 +102,7 @@ SpoilerSpoiler.prototype.sendAllNewCards = function (gervin, newLinks) {
     }, function(err) {
         if (err) 
             console.log(err);
-        setTimeout(function() {
-            self.onReady(gervin);
-        }, POLL_TIMEOUT);
     })
-
 }
 
 SpoilerSpoiler.prototype.onReady = function(gervin) {
@@ -129,10 +125,14 @@ SpoilerSpoiler.prototype.onReady = function(gervin) {
                     } else {
                         console.log("No new spoilers found");
                     }
+                    setTimeout(function() {
+                        self.onReady(gervin);
+                    }, POLL_TIMEOUT);
                 }
             );
         });
     });
+
 }
 
 SpoilerSpoiler.prototype.getAllCardLinks = function (callback) {
