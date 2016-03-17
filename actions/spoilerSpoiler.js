@@ -30,9 +30,19 @@ SpoilerSpoiler.prototype.help = "Automatically gets new spoilers for MTG!";
 
 SpoilerSpoiler.prototype.filterByMoreRecent = function(cardLinks, lastSeen) {
     output = []
-    for (var i=0; i < cardLinks.length; i++) {
-        var cardLink = cardLinks[i];
-        if (cardLink === lastSeen || i >= 5)
+    // Make 'em unique (Double faced have two links to the same page)
+    var linksSeen = {};
+    var uniqueCardLinks = [];
+    for (var j = 0; j < cardLinks.length; j++) {
+        if (linksSeen.hasOwnProperty(cardLinks[j])) {
+            continue;
+        }
+        uniqueCardLinks.push(cardLinks[j]);
+        linksSeen[cardLinks[j]] = 1;
+   }
+    for (var i=0; i < uniqueCardLinks.length; i++) {
+        var cardLink = uniqueCardLinks[i];
+        if (cardLink === lastSeen || i >= 10)
             break;
         output.push(cardLink);
     }
