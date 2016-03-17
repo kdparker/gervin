@@ -39,16 +39,48 @@ SpoilerSpoiler.prototype.filterByMoreRecent = function(cardLinks, lastSeen) {
     return output;
 };
 
-SpoilerSpoiler.prototype.sendAllNewCards = function (gervin, newLinks) {
-    var self = this;
+
+SpoilerSpoiler.prototype.formatCardOutput = function($, cardLink) {
     const NAME = 0;
     const COST = 1;
     const TYPE = 2;
     const TEXT = 3;
     const PT = -1;
-    var channels = gervin.channels.filter(function(channel) {
-        return (!channel.isPrivate && channel.type === "text")
-    });
+    var imageLink = 'http://mythicspoiler.com/' + cardLink.replace(/html/, 'jpg');
+    contentRow = $("table").eq(5).find("tr").eq(0);
+    // Check if double faced
+    if (contentRow.find("td").length < 6) {
+        return imageLink + "\n" +
+                imageLink.replace(/[^\/]*$/, '') + contentRow.find("td img").attr('src');
+    }
+    var textFields = $("font").filter(function () {
+        return $(this).attr('size') == "4";
+    }).closest('table').find('tr');
+    var cardName = textFields.eq(NAME).text().trim();
+    var cardCost = textFields.eq(COST).text().trim();
+    var cardType = textFields.eq(TYPE).text().trim();
+    var cardText = textFields.eq(TEXT).find('td');
+    cardText.html(cardText.html().replace(/<br>\s*<br>/g, "\n"));
+    cardText = cardText.text().trim();
+    var cardPT   = textFields.eq(PT).text().match(
+        /((\d+|\*)\/(\d+|\*))/
+    )
+    if (cardPT) {
+        cardPT = cardPT[1];
+    } else {
+        cardPT = "";
+    }
+    output = cardName + "    " + cardCost + "\n" +
+            cardType + "\n" +
+            cardText + "\n" +
+            cardPT + "\n" +
+            imageLink;
+    return output.replace(/\n\n/g, "\n");
+}
+
+SpoilerSpoiler.prototype.sendAllNewCards = function (gervin, newLinks) {
+    var self = this;
+    var channels = gervin.getAllGeneralTextChannels();
     gervin.db.run("INSERT INTO seen_spoiler (spoiler_link) VALUES (?)", newLinks[0]);
     for (var i = 0; i < channels.length; i++) {
         gervin.sendMessage(channels[i],
@@ -61,33 +93,9 @@ SpoilerSpoiler.prototype.sendAllNewCards = function (gervin, newLinks) {
             if (err) 
                 callback(err);
             var $ = cheerio.load(body);
-            var imageLink = 'http://mythicspoiler.com/' + cardLink.replace(/html/, 'jpg');
-            var textFields = $("font").filter(function () {
-                return $(this).attr('size') == "4";
-            }).closest('table').find('tr');
-            var cardName = textFields.eq(NAME).text().trim();
-            var cardCost = textFields.eq(COST).text().trim();
-            var cardType = textFields.eq(TYPE).text().trim();
-            var cardText = textFields.eq(TEXT).text().trim();
-            var cardPT   = textFields.eq(PT).text().match(
-                /((\d+|\*)\/(\d+|\*))/
-            )
-            if (cardPT) {
-                cardPT = cardPT[1];
-            } else {
-                cardPT = "";
-            }
-            console.log("Spoiler for: " + cardName + " being sent");
+            output = self.formatCardOutput($, cardLink);
             for (var i = 0; i < channels.length; i++) {
-                gervin.sendMessage(channels[i],imageLink);
-                //gervin.sendMessage(channel,
-                //    cardName + "    " +
-                //    cardCost + "\n" +
-                //    cardType + "\n" + 
-                //    cardText + "\n" +
-                //    cardPT + "\n" +
-                //    imageLink
-                //);
+                gervin.sendMessage(channels[i], output);
             }
             callback(null);
         });
@@ -103,6 +111,7 @@ SpoilerSpoiler.prototype.sendAllNewCards = function (gervin, newLinks) {
 
 SpoilerSpoiler.prototype.onReady = function(gervin) {
     var self = this;
+    console.log("Checking for new spoilers...");
     self.getAllCardLinks(function(cardLinks) {
         gervin.db.serialize(function() {
             gervin.db.each(
@@ -115,7 +124,10 @@ SpoilerSpoiler.prototype.onReady = function(gervin) {
                     var lastSeen = row.spoiler_link;
                     var newLinks = self.filterByMoreRecent(cardLinks, lastSeen);
                     if (newLinks.length) {
+                        console.log("New spoilers found: " + newLinks);
                         self.sendAllNewCards(gervin, newLinks);
+                    } else {
+                        console.log("No new spoilers found");
                     }
                 }
             );

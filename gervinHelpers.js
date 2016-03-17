@@ -30,3 +30,10 @@ module.exports.getTestFieldChannel = function () {
             return channel
     }
 }
+
+module.exports.getAllGeneralTextChannels = function () {
+    var self = this;
+    return self.channels.filter(function(channel) {
+        return (!channel.isPrivate && channel.type == "text" && channel.name.match(/general/i))
+    });
+}
