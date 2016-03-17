@@ -108,31 +108,34 @@ SpoilerSpoiler.prototype.sendAllNewCards = function (gervin, newLinks) {
 SpoilerSpoiler.prototype.onReady = function(gervin) {
     var self = this;
     console.log("Checking for new spoilers...");
-    self.getAllCardLinks(function(cardLinks) {
-        gervin.db.serialize(function() {
-            gervin.db.each(
-                "SELECT spoiler_link FROM seen_spoiler ORDER BY time_added DESC LIMIT 1", 
-                function(err, row) {
-                    if (err) {
-                        console.log(err);
-                        return;
+    try {
+        self.getAllCardLinks(function(cardLinks) {
+            gervin.db.serialize(function() {
+                gervin.db.each(
+                    "SELECT spoiler_link FROM seen_spoiler ORDER BY time_added DESC LIMIT 1", 
+                    function(err, row) {
+                        if (err) {
+                            console.log(err);
+                            return;
+                        }
+                        var lastSeen = row.spoiler_link;
+                        var newLinks = self.filterByMoreRecent(cardLinks, lastSeen);
+                        if (newLinks.length) {
+                            console.log("New spoilers found: " + newLinks);
+                            self.sendAllNewCards(gervin, newLinks);
+                        } else {
+                            console.log("No new spoilers found");
+                        }
+                        setTimeout(function() {
+                            self.onReady(gervin);
+                        }, POLL_TIMEOUT);
                     }
-                    var lastSeen = row.spoiler_link;
-                    var newLinks = self.filterByMoreRecent(cardLinks, lastSeen);
-                    if (newLinks.length) {
-                        console.log("New spoilers found: " + newLinks);
-                        self.sendAllNewCards(gervin, newLinks);
-                    } else {
-                        console.log("No new spoilers found");
-                    }
-                    setTimeout(function() {
-                        self.onReady(gervin);
-                    }, POLL_TIMEOUT);
-                }
-            );
+                );
+            });
         });
-    });
-
+    } catch (e) {
+        console.log(e)
+    }
 }
 
 SpoilerSpoiler.prototype.getAllCardLinks = function (callback) {
