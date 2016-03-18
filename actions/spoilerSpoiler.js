@@ -60,8 +60,12 @@ SpoilerSpoiler.prototype.formatCardOutput = function($, cardLink) {
     contentRow = $("table").eq(5).find("tr").eq(0);
     // Check if double faced
     if (contentRow.find("td").length < 6) {
+        secondLink = contentRow.find("td img").attr('src');
+        if (!secondLink)
+            throw "Need to wait for mythic spoilers to load second image"
+        secondLink = imageLink.replace(/[^\/]*$/, '') + secondLink;
         return imageLink + "\n" +
-                imageLink.replace(/[^\/]*$/, '') + contentRow.find("td img").attr('src');
+            secondLink;
     }
     var textFields = $("font").filter(function () {
         return $(this).attr('size') == "4";
@@ -91,27 +95,36 @@ SpoilerSpoiler.prototype.formatCardOutput = function($, cardLink) {
 SpoilerSpoiler.prototype.sendAllNewCards = function (gervin, newLinks) {
     var self = this;
     var channels = gervin.getAllGeneralTextChannels();
-    gervin.db.run("INSERT INTO seen_spoiler (spoiler_link) VALUES (?)", newLinks[0]);
-    for (var i = 0; i < channels.length; i++) {
-        gervin.sendMessage(channels[i],
-            "NEW SPOILERS ALERT!!!!",
-            {"tts": true}
-        )
-    }
+    fullOutput = [];
     async.eachSeries(newLinks, function(cardLink, callback) {
         request('http://mythicspoiler.com/' + cardLink, function(err, response, body) {
             if (err) 
                 callback(err);
-            var $ = cheerio.load(body);
-            output = self.formatCardOutput($, cardLink);
-            for (var i = 0; i < channels.length; i++) {
+            try {
+                var $ = cheerio.load(body);
+                output = self.formatCardOutput($, cardLink);
+                fullOutput.push(output);
+                callback(null);
+            } catch (e) {
+                callback(e);
+            }
+        })
+    }, function(err) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        gervin.db.run("INSERT INTO seen_spoiler (spoiler_link) VALUES (?)", newLinks[0]);
+        for (var i = 0; i < channels.length; i++) {
+            gervin.sendMessage(channels[i],
+                "NEW SPOILERS ALERT!!!!",
+                {"tts": true}
+            )
+            for (var j = 0; j < fullOutput.length; j++) {
+                var output = fullOutput[j];
                 gervin.sendMessage(channels[i], output);
             }
-            callback(null);
-        });
-    }, function(err) {
-        if (err) 
-            console.log(err);
+        }
     })
 }
 
