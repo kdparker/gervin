@@ -3,5 +3,7 @@
     "imageMe",
     "democraticAdmin",
     "help",
-    "spoilerSpoiler"
+    "spoilerSpoiler",
+    "glinkSetter",
+    "glinkGetter"
 ]
