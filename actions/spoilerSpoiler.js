@@ -42,7 +42,7 @@ SpoilerSpoiler.prototype.filterByMoreRecent = function(cardLinks, lastSeen) {
    }
     for (var i=0; i < uniqueCardLinks.length; i++) {
         var cardLink = uniqueCardLinks[i];
-        if (cardLink === lastSeen || i >= 10)
+        if (cardLink === lastSeen)
             break;
         output.push(cardLink);
     }
