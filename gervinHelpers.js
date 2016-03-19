@@ -50,3 +50,19 @@ module.exports.getAllGeneralTextChannels = function (whitelistedServers) {
         )
     });
 }
+
+module.exports.joinServersGeneralVoiceChannel = function (partialServerName) {
+    var self = this;
+    for (var i = 0; i < self.channels.length; i++) {
+        var channel = self.channels[i];
+        if (
+            !channel.isPrivate &&
+            channel.type == "voice" &&
+            channel.name.match(/general/i) &&
+            channel.server.name.indexOf(partialServerName) >= 0
+        ) {
+            self.joinVoiceChannel(channel);
+            break;
+        }
+    }
+}        

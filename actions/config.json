@@ -22,5 +22,17 @@
     },
     "glinkGetter": {
         "enabled": true
+    },
+    "soundboard": {
+        "enabled": true,
+        "enabledSounds": {
+            "navyseal": "navyseal.mp3",
+            "haha": "haha.mp3",
+            "mlg": "airhorn.mp3",
+            "hitmarker": "hitmarker.mp3"
+        }
+    },
+    "stop": {
+        "enabled": true
     }
 }

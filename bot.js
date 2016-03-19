@@ -45,6 +45,7 @@ buildActions();
 
 gervin.on("ready", function () {
     console.log("Ready!");
+    gervin.joinServersGeneralVoiceChannel(AuthDetails.enabledVoiceChannel);
 });
 
 gervin.on("disconnected", function () {

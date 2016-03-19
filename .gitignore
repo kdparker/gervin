@@ -20,6 +20,7 @@ coverage
 
 # Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
+*.DS_STORE
 
 # node-waf configuration
 .lock-wscript
@@ -29,6 +30,7 @@ build/Release
 
 # Dependency directory
 node_modules
+actions/soundboard
 
 # Optional npm cache directory
 .npm
