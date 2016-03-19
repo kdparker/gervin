@@ -30,7 +30,8 @@
             "haha": "haha.mp3",
             "mlg": "airhorn.mp3",
             "hitmarker": "hitmarker.mp3"
-        }
+        },
+        "volume": 0.25
     },
     "stop": {
         "enabled": true

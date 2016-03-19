@@ -82,6 +82,8 @@ SpoilerSpoiler.prototype.formatCardOutput = function($, cardLink) {
     } else {
         cardPT = "";
     }
+    if (cardName && !cardText && !cardPT) 
+        throw "Information not ready for " + cardName
     output = cardName + "    " + cardCost + "\n" +
             cardType + "\n" +
             cardText + "\n" +
