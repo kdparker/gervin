@@ -168,7 +168,7 @@ SpoilerSpoiler.prototype.getAllCardLinks = function (callback) {
         $ = cheerio.load(body);
 
         card_links = $('a').filter(function(i, el) {
-            return $(this).attr('href').match(/\/cards\//i)
+            return ($(this).attr('href') && $(this).attr('href').match(/\/cards\//i))
         }).map(function(i, el) {
             return $(this).attr('href')
         }).toArray();
