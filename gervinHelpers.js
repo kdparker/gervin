@@ -31,9 +31,22 @@ module.exports.getTestFieldChannel = function () {
     }
 }
 
-module.exports.getAllGeneralTextChannels = function () {
+module.exports.getAllGeneralTextChannels = function (whitelistedServers) {
     var self = this;
+    whitelistedServers = whitelistedServers || [];
+    var whitelistedServerRegex = /.*/i;
+    if (whitelistedServers) {
+        whitelistedServerRegex = new RegExp(
+            "(" + whitelistedServers.join('|') + ")", 
+            'i'
+        );
+    }
     return self.channels.filter(function(channel) {
-        return (!channel.isPrivate && channel.type == "text" && channel.name.match(/general/i))
+        return (
+            !channel.isPrivate && 
+            channel.type == "text" && 
+            channel.name.match(/general/i) &&
+            channel.server.name.match(whitelistedServerRegex)
+        )
     });
 }

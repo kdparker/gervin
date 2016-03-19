@@ -2,7 +2,7 @@ var Discord = require("discord.js"),
     sqlite3 = require('sqlite3').verbose();
 
 var AuthDetails = require("./auth.json"),
-    EnabledActions = require("./actions/enabledActions.json"),
+    ActionConfig = require("./actions/config.json"),
     GervinHelpers = require("./gervinHelpers.js");
 
 var gervin = new Discord.Client();
@@ -16,26 +16,32 @@ function extendGervin() {
     gervin.db = new sqlite3.Database(AuthDetails.dbName);
 }
 
-function buildEnabledActions() {
+function buildActions() {
     gervin.actions = [];
-    console.log("Loading enabled actions... " + EnabledActions);
-    for (var i = 0; i < EnabledActions.length; i++) {
-        actionFileName = EnabledActions[i] + ".js";
-        try {
-            console.log("Loading " + actionFileName + "...");
-            Action = require("./actions/" + actionFileName);
-            newAction = new Action(gervin);
-            gervin.actions.push(newAction);
-            console.log("Loaded " + actionFileName);
-        } catch (e) {
-            console.log("ERROR: Failed loading " + actionFileName + ": ");
-            console.log(e);
+    var actionNames = Object.keys(ActionConfig);
+    for (var i = 0; i < actionNames.length; i++) {
+        var actionName = actionNames[i];
+        var actionConfig = ActionConfig[actionName];
+        var actionFileName = actionName + ".js";
+        if (actionConfig.enabled) {
+            try {
+                console.log("Loading " + actionFileName + "...");
+                Action = require("./actions/" + actionFileName);
+                newAction = new Action(gervin, actionConfig);
+                gervin.actions.push(newAction);
+                console.log("Loaded " + actionFileName);
+            } catch (e) {
+                console.log("ERROR: Failed loading " + actionFileName + ": ");
+                console.log(e);
+            }
+        } else {
+            console.log(actionName + " is not enabled, not loading");
         }
     }
 }
 
 extendGervin();
-buildEnabledActions();
+buildActions();
 
 gervin.on("ready", function () {
     console.log("Ready!");

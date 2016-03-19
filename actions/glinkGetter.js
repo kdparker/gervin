@@ -2,9 +2,9 @@ var Action = require("./baseAction.js"),
     async = require('async'),
     inherits = require('util').inherits;
   
-function Getter(gervin) {
+function Getter(gervin, config) {
     // We rely on setter to create the database we use
-    Action.call(this, gervin);
+    Action.call(this, gervin, config);
 }
   
 inherits(Getter, Action);

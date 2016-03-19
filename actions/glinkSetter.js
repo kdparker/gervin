@@ -2,8 +2,8 @@ var SlashAction = require("./slashAction.js"),
     async = require('async'),
     inherits = require('util').inherits;
   
-function Setter(gervin) {
-    SlashAction.call(this, gervin, true);
+function Setter(gervin, config) {
+    SlashAction.call(this, gervin, config, true);
 
     var db = gervin.db;
     console.log("Waiting for db initialization for Setter..."); 

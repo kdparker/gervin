@@ -3,9 +3,9 @@ var SlashAction = require("./slashAction.js"),
     AuthDetails = require("../auth.json"),
     inherits = require('util').inherits;
 
-function ImageMe(gervin) {
+function ImageMe(gervin, config) {
     this.client = googleimages(AuthDetails.cseId, AuthDetails.cseApiKey);
-    SlashAction.call(this, gervin, true);
+    SlashAction.call(this, gervin, config, true);
 }
 
 inherits(ImageMe, SlashAction)

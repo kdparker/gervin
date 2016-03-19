@@ -4,10 +4,8 @@ var Action = require("./baseAction.js"),
     async = require('async'),
     inherits = require('util').inherits;
 
-const POLL_TIMEOUT = 120000;
-  
-function SpoilerSpoiler(gervin) {
-    Action.call(this, gervin);
+function SpoilerSpoiler(gervin, config) {
+    Action.call(this, gervin, config);
 
     var db = gervin.db;
     console.log("Waiting for db initialization for SpoilerSpoiler..."); 
@@ -94,7 +92,9 @@ SpoilerSpoiler.prototype.formatCardOutput = function($, cardLink) {
 
 SpoilerSpoiler.prototype.sendAllNewCards = function (gervin, newLinks) {
     var self = this;
-    var channels = gervin.getAllGeneralTextChannels();
+    var channels = gervin.getAllGeneralTextChannels(
+        self.whitelistedServers
+    );
     fullOutput = [];
     async.eachSeries(newLinks, function(cardLink, callback) {
         request('http://mythicspoiler.com/' + cardLink, function(err, response, body) {
@@ -151,7 +151,7 @@ SpoilerSpoiler.prototype.onReady = function(gervin) {
                         }
                         setTimeout(function() {
                             self.onReady(gervin);
-                        }, POLL_TIMEOUT);
+                        }, self.pollInterval);
                     }
                 );
             });

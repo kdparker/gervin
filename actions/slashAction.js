@@ -1,10 +1,10 @@
 var Action = require("./baseAction.js"),
     inherits = require('util').inherits;
 
-function SlashAction(gervin, require_args, arg_regex_string) {
+function SlashAction(gervin, config, require_args, arg_regex_string) {
+    Action.call(this, gervin, config);
     require_args = require_args || false;
     arg_regex_string = arg_regex_string || "(\\s+[^\\s].*)";
-    Action.call(this, gervin);
     var self = this;
     var commandRegexString = "^/" + 
         self.commandId + 

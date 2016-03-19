@@ -1,0 +1,26 @@
+{
+    "pingPong" : {
+        "enabled": false
+    },
+    "imageMe": {
+        "enabled": true
+    },
+    "democraticAdmin": {
+        "enabled": true,
+        "timeToVote": 30000
+    },
+    "help": {
+        "enabled": true
+    },
+    "spoilerSpoiler": {
+        "enabled": true,
+        "whitelistedServers": ["5.2x", "Gervin"],
+        "pollInterval": 120000
+    },
+    "glinkSetter": {
+        "enabled": true
+    },
+    "glinkGetter": {
+        "enabled": true
+    }
+}

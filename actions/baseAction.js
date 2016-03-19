@@ -1,5 +1,10 @@
-function Action(gervin) {
-    var self = this
+function Action(gervin, config) {
+    var self = this;
+    var configNames = Object.keys(config);
+    for (var i = 0; i < configNames.length; i++) {
+        var configName = configNames[i];
+        self[configName] = config[configName];
+    }
     gervin.on("message", function(msg) {
         try {
             if (

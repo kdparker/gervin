@@ -1,8 +1,8 @@
 var SlashAction = require("./slashAction.js"),
     inherits = require('util').inherits;
 
-function Help(gervin) {
-    SlashAction.call(this, gervin);
+function Help(gervin, config) {
+    SlashAction.call(this, gervin, config);
 }
 
 inherits(Help, SlashAction);

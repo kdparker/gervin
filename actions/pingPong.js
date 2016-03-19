@@ -1,8 +1,8 @@
 var Action = require("./baseAction.js"),
     inherits = require('util').inherits;
 
-function PingPong(gervin) {
-    Action.call(this, gervin);
+function PingPong(gervin, config) {
+    Action.call(this, gervin, config);
 }
 
 inherits(PingPong, Action);

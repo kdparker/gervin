@@ -2,11 +2,10 @@ var SlashAction = require("./SlashAction.js"),
     util = require("util"),
     inherits = require('util').inherits;
 
-const TIME_TO_VOTE = 30000
 const voteTypes = ["vote-tts"];
 
-function DemoAdmin(gervin) {
-    SlashAction.call(this, gervin, true, "\\s+(start|yes|no)");
+function DemoAdmin(gervin, config) {
+    SlashAction.call(this, gervin, config, true, "\\s+(start|yes|no)");
     this.votesActive = {};
     this.votesCast = {};
 }
@@ -132,7 +131,7 @@ DemoAdmin.prototype.startVote = function(gervin, msg, voteType) {
         // Wait one minute and then run endVote
         setTimeout(function() {
             self.endVote(gervin, msg, voteType);
-        }, TIME_TO_VOTE);
+        }, self.timeToVote);
         if (voteType === "tts") {
             gervin.sendMessage(
                 msg.channel,
