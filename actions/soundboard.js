@@ -29,7 +29,7 @@ Soundboard.prototype.onMessage = function(gervin, msg) {
     ) {
         console.log("Playing actions/soundboard/" + self.enabledSounds[query]); 
         gervin.voiceConnection.playFile(
-            "actions/soundboard/" + self.enabledSounds[query],
+            "actions/soundboard/" + self.enabledSounds[query.toLowerCase()],
             {"volume": self.volume}
         );
         gervin.replyAndDelete(
