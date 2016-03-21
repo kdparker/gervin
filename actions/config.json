@@ -32,10 +32,15 @@
             "hitmarker": "hitmarker.mp3",
             "mad": "mad.mp3",
             "trump": "trump.mp3",
-            "boo": "trump.mp3",
+            "boo": "boo.mp3",
             "bradberry": "bradberry.mp3",
             "beastmaster": "beastmaster.mp3",
-            "profamity": "profamity.mp3"
+            "profamity": "profamity.mp3",
+            "leeroy": "leeroy.mp3",
+            "sad": "sad.mp3",
+            "moonbase": "moonbase.mp3",
+            "aeiou": "moonbase.mp3",
+            "johnmadden": "moonbase.mp3"
         },
         "volume": 0.25
     },

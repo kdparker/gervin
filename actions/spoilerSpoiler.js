@@ -82,7 +82,7 @@ SpoilerSpoiler.prototype.formatCardOutput = function($, cardLink) {
     } else {
         cardPT = "";
     }
-    if (cardName && !cardText && !cardPT) 
+    if (!cardText && !cardPT) 
         throw "Information not ready for " + cardName
     output = cardName + "    " + cardCost + "\n" +
             cardType + "\n" +
@@ -165,8 +165,10 @@ SpoilerSpoiler.prototype.onReady = function(gervin) {
 
 SpoilerSpoiler.prototype.getAllCardLinks = function (callback) {
     request('http://mythicspoiler.com/newspoilers.html', function(err, response, body) {
-        if (err)
-            throw "Error getting mythic spoiler page";
+        if (err) {
+            console.log("Error getting mythic spoiler page " + err);
+            return []
+        }
         $ = cheerio.load(body);
 
         card_links = $('a').filter(function(i, el) {
