@@ -60,7 +60,7 @@ SpoilerSpoiler.prototype.formatCardOutput = function($, cardLink) {
     if (contentRow.find("td").length < 6) {
         secondLink = contentRow.find("td img").attr('src');
         if (!secondLink)
-            throw "Need to wait for mythic spoilers to load second image"
+            throw {reason: "Need to wait for mythic spoilers to load second image"}
         secondLink = imageLink.replace(/[^\/]*$/, '') + secondLink;
         return imageLink + "\n" +
             secondLink;
@@ -83,13 +83,63 @@ SpoilerSpoiler.prototype.formatCardOutput = function($, cardLink) {
         cardPT = "";
     }
     if (!cardText && !cardPT) 
-        throw "Information not ready for " + cardName
+        throw {
+            reason: "Information not ready for " + cardLink,
+            checkForFinishedSpoilers: true
+        }
     output = cardName + "    " + cardCost + "\n" +
             cardType + "\n" +
             cardText + "\n" +
             cardPT + "\n" +
             imageLink;
     return output.replace(/\n\n/g, "\n");
+}
+
+SpoilerSpoiler.prototype.checkForFinishedSpoilers = function(gervin, mostRecentNewLink) {
+    var self = this;
+    console.log("Checking for finished spoilers")
+    request('http://mythicspoiler.com/newspoilers.html', function(err, response, body) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        try {
+            var $ = cheerio.load(body);
+            var spoilerCountText = ""; 
+            var menuItems = $("#menuwrapper li");
+            var isFinishedSpoilersMatch;
+            for (var i = 0; i < menuItems.length; i++) {
+                spoilerCountText = menuItems.eq(i).text();
+                isFinishedSpoilersMatch = spoilerCountText.match(/(\d+)\/(\d+)/);
+                if (isFinishedSpoilersMatch)
+                    break;
+            }
+            if (!isFinishedSpoilersMatch)
+                throw "Something went wrong! Could not find any spoiler count text match";
+            var isFinishedSpoilers = false;
+            if (isFinishedSpoilersMatch) {
+                console.log("Found isFinishedSpoilers match, " + isFinishedSpoilersMatch[0])
+                isFinishedSpoilers = (isFinishedSpoilersMatch[1] === isFinishedSpoilersMatch[2])
+            }
+            if (isFinishedSpoilers) {
+                console.log("We are done this spoiler season!")
+                gervin.db.run("INSERT INTO seen_spoiler (spoiler_link) VALUES (?)", mostRecentNewLink);
+                var channels = gervin.getAllGeneralTextChannels(
+                    self.whitelistedServers
+                )
+                for (var i = 0; i < channels.length; i++) {
+                    gervin.sendMessage(
+                        channels[i],
+                        "Full spoilers are out! Check 'em out at: " +
+                        "http://mythicspoiler.com/newspoilers.html",
+                        {tts:true}
+                    );
+                }
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    })
 }
 
 SpoilerSpoiler.prototype.sendAllNewCards = function (gervin, newLinks) {
@@ -114,7 +164,10 @@ SpoilerSpoiler.prototype.sendAllNewCards = function (gervin, newLinks) {
     }, function(err) {
         if (err) {
             console.log(err);
-            return;
+            if (err.checkForFinishedSpoilers) {
+                return self.checkForFinishedSpoilers(gervin, newLinks[0])
+            } else 
+                return
         }
         gervin.db.run("INSERT INTO seen_spoiler (spoiler_link) VALUES (?)", newLinks[0]);
         for (var i = 0; i < channels.length; i++) {
@@ -162,6 +215,8 @@ SpoilerSpoiler.prototype.onReady = function(gervin) {
         console.log(e)
     }
 }
+
+SpoilerSpoiler.prototype.c
 
 SpoilerSpoiler.prototype.getAllCardLinks = function (callback) {
     request('http://mythicspoiler.com/newspoilers.html', function(err, response, body) {
